@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solving a quadratic equation by Sofia Weber</title>
+
+    <style>
+        body {
+            font-family:'Times New Roman', Times, serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        h3 {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .input-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="number"] {
+            width: 100px;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            min-height: 50px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+    </style>
+
+</head>
+<body>
+   
+    <div class="container">
+        <h1>Solving a Quadratic Equation</h1>
+        <h3>Made by: Sofia Emanuelle Weber</h3>
+        
+        <div class="input-section">
+            <p><strong>Enter the coefficients for your quadratic equation in the form: Ax² + Bx + C = 0</strong></p>
+            <p><em>Where A, B, and C can be any numbers (including 0)</em></p>
+            
+            <div class="input-group">
+                <label for="valueA">A value (coefficient of x²):</label>
+                <input type="number" id="valueA" step="any" placeholder="Enter A">
+            </div>
+            
+            <div class="input-group">
+                <label for="valueB">B value (coefficient of x):</label>
+                <input type="number" id="valueB" step="any" placeholder="Enter B">
+            </div>
+            
+            <div class="input-group">
+                <label for="valueC">C value (constant term):</label>
+                <input type="number" id="valueC" step="any" placeholder="Enter C">
+            </div>
+            
+            <button onclick="solveEquation()">Solve Equation</button>
+        </div>
+        
+        <div id="result"></div>
+    </div>
+    
+    <script>
+         function solveQuadratic(a, b, c) {
+            // Step 1: Check if it's actually a quadratic equation
+            if (a === 0) {
+                // This is not a quadratic equation (it's linear or constant)
+                if (b === 0) {
+                    if (c === 0) {
+                        return "This equation has infinitely many solutions (0 = 0)";
+                    } else {
+                        return "This equation has no solutions (contradiction)";
+                    }
+                } else {
+                    // Linear equation: bx + c = 0, so x = -c/b
+                    let x = -c / b;
+                    return `This is a linear equation with solution x = ${x}`;
+                }
+            }
+            
+            // Step 2: Calculate the discriminant (b² - 4ac)
+            let discriminant = b * b - 4 * a * c;
+            
+            // Step 3: Use if-statements to determine the nature of solutions
+            if (discriminant > 0) {
+                // Two distinct real solutions
+                let x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+                let x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+                return `This equation has 2 solutions, and they are x = ${x1.toFixed(4)} and x = ${x2.toFixed(4)}`;
+                
+            } else if (discriminant === 0) {
+                // Exactly one real solution (repeated root)
+                let x = -b / (2 * a);
+                return `This equation has exactly 1 solution, and it is x = ${x.toFixed(4)}`;
+                
+            } else {
+                // discriminant < 0
+                // No real solutions (complex solutions exist but we only report real ones)
+                return "This equation has no real solutions";
+            }
+        }
+
+        function solveEquation() {
+            // Get input values
+            const a = parseFloat(document.getElementById('valueA').value);
+            const b = parseFloat(document.getElementById('valueB').value);
+            const c = parseFloat(document.getElementById('valueC').value);
+            
+            // Check if inputs are valid numbers
+            if (isNaN(a) || isNaN(b) || isNaN(c)) {
+                document.getElementById('result').innerHTML = 'Please enter valid numbers for all coefficients.';
+                document.getElementById('result').className = 'warning';
+                return;
+            }
+            
+            // Display the equation being solved
+            let equationDisplay = `${a}x² + ${b}x + ${c} = 0`;
+            
+            // Solve the equation
+            const solution = solveQuadratic(a, b, c);
+            
+            // Display the result
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `
+                <strong>Equation:</strong> ${equationDisplay}<br><br>
+                <strong>Solution:</strong> ${solution}
+            `;
+            
+            // Add appropriate styling based on result type
+            if (solution.includes('no real solutions')) {
+                resultDiv.className = 'warning';
+            } else if (solution.includes('linear equation') || solution.includes('infinitely many') || solution.includes('no solutions (contradiction)')) {
+                resultDiv.className = 'info';
+            } else {
+                resultDiv.className = 'success';
+            }
+        }
+    </script>
+</body>
+</html>
